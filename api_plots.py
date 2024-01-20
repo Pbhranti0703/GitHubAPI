@@ -13,8 +13,8 @@ def plot_commits():
     commits_data = commits_response.json()
 
     commit_dates = [datetime.strptime(commit['commit']['author']['date'], '%Y-%m-%dT%H:%M:%SZ') for commit in commits_data]
-
-    # Plot commits over time
+    
+    # Plot "commits" over time
     plt.figure(figsize=(10, 5))
     plt.plot(commit_dates, range(1, len(commit_dates) + 1))
     plt.title('Commits Over Time')
@@ -34,7 +34,7 @@ def plot_commits_per_contributor():
         author = commit['commit']['author']['name']  # You can use 'login' for GitHub username
         commit_counts[author] = commit_counts.get(author, 0) + 1
 
-    # Plot bar graph
+    # Plot bar graph for "commits" data
     plt.figure(figsize=(12, 6))
     plt.bar(commit_counts.keys(), commit_counts.values(), color='skyblue')
     plt.title('Commits per Contributor')
