@@ -4,7 +4,6 @@ import requests
 import matplotlib.pyplot as plt
 from datetime import datetime
 import credentials as creds
-import pprint
 
 def plot_commits():
     # Get commits
