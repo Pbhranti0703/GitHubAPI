@@ -1,0 +1,166 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: transparent;
+        }
+</style>
+
+<div class="container" style="margin-left: 4%; margin-top: 4%; margin-right: 4%;">
+    <h4> <i class="fas fa-save"></i> Commits</h4>
+
+    <div class=row style="margin-bottom:2%;">
+        <div class="col-lg-12 mb-4">
+              <div class="card">
+                <div class="card-body"  >
+                  <p> Commits over time</p>
+                  <div id="commit-line-chart"></div>
+                </div>
+                
+              </div>
+        </div>
+    </div>
+
+    <div class=row style="margin-bottom:2%;">
+        <div class="col-lg-12 mb-4">
+              <div class="card">
+                <div class="card-body"  >
+                  <p>Commits per Contributor</p>
+                  <div id="commit-bar-chart"></div>
+                </div>
+                
+              </div>
+        </div>
+    </div>
+    
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    var lineChartOptions = {
+            chart: {
+                type: 'line',
+                height: 225,
+            foreColor: '#ffffff',
+            fontSize: '8px',
+            fontFamily: 'Helvetica, Arial',
+            fontWeight: 400,
+            },
+            series: [{
+                name: 'Commits',
+                data: {{line_chart_data|safe}}
+            }],
+            xaxis: {
+                type: 'datetime',
+                categories: {{dates|safe}},
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                gridLines: {
+                    show: false
+                }
+            },
+            yaxis: {
+                title: {
+                    text: 'Total Commits'
+                },
+                
+                axisBorder: {
+                    show: false
+                },
+                axisTicks: {
+                    show: false
+                },
+                gridLines: {
+                    show: false
+                }
+            }
+        };
+
+        var lineChart = new ApexCharts(document.getElementById('commit-line-chart'), lineChartOptions);
+        lineChart.render();
+</script>
+
+<script>
+    var barChartOptions = {
+        chart: {
+            type: 'bar',
+            height: 225,
+            foreColor: '#ffffff',
+            fontSize: '8px',
+            fontFamily: 'Helvetica, Arial',
+            fontWeight: 400,
+        },
+        value: {
+          show: true,
+          fontSize: '5px',
+          fontFamily: undefined,
+          fontWeight: 400,
+          color: undefined,
+          offsetY: 16,
+          formatter: function formatter(val) {
+            return val ;
+          }
+        },
+      legend: {
+        show: true,
+        floating: false,
+        position: 'right',
+        horizontalAlign:'left',
+        verticalAlign:'left',
+        // offsetX: 65,
+        // offsetY: 140,
+        fontFamily: 'Helvetica, Arial',
+        width:240,
+        labels: {
+              colors: '#ffffff',
+              useSeriesColors: true
+          },
+      },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+            }
+        },
+        dataLabels: {
+            enabled: false
+        },
+        series: [{
+            name: 'Commits',
+            data: {{ bar_chart_data|safe }}
+        }],
+        xaxis: {
+            title: {
+                text: 'Total Commits'
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Contributors'
+            }
+        }
+    };
+
+    var barChart = new ApexCharts(document.getElementById('commit-bar-chart'), barChartOptions);
+    barChart.render();
+</script>
+
+
+{% endblock content %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oxygen+Mono&display=swap">
+    <link rel="stylesheet" href="fontawesome-free-5.15.1-web/css/all.css">
+    <script src="https://kit.fontawesome.com/ecab628f06.js" crossorigin="anonymous"></script>
+
+    <title>
+        Bhranti Patel
+    </title>
+
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+
+    <!-- Specific Page CSS goes HERE  -->
+    {% block stylesheets %}{% endblock stylesheets %}
+        
+</head>
+    
+    <body>
+        {% include 'navbar.html' %}
+
+        {% include 'navbarjs.html' %}
+
+        {% block content %}{% endblock content %}
+
+        <!-- Specific Page JS goes HERE  -->
+        {% block javascripts %}{% endblock javascripts %}
+
+    </body>
+</html>

@@ -1,0 +1,147 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: transparent;
+        }
+</style>
+
+<div class="container" style="margin-left: 4%; margin-top: 4%; margin-right: 4%;">
+    <h4> <i class="fas fa-users"></i> Contributors</h4>
+
+    <div class=row style="margin-bottom:2%;">
+        <div class="col-lg-12 mb-4">
+              <div class="card">
+                <div class="card-body"  >
+                  <p> Contributor(s) Details</p>
+                  <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Last Login</th>
+                                <th>Total Commits</th>
+                                <!-- Add more columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for contributor in contributors %}
+                            <tr>
+                                <td>{{ contributor['username'] }}</td>
+                                <td>{{ contributor['last_login'] }}</td>
+                                <td>{{ contributor['total_commits'] }}</td>
+                                <!-- Add more cells with contributor details -->
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                  </div>
+                </div>
+                
+              </div>
+        </div>
+    </div>
+
+    <div class=row style="margin-bottom:2%;">
+        <div class="col-lg-12 mb-4">
+              <div class="card">
+                <div class="card-body"  >
+                  <p>Top Contributors</p>
+                  <div id="pie-chart"></div>
+                </div>
+                
+              </div>
+        </div>
+    </div>
+    <link href="static\assets\css\jQueryDataTable.css" rel="stylesheet">
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.colVis.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    var pieLabels = {{pie_labels|safe}};
+    var pieSizes = {{pie_sizes|safe}};
+    console.log(pieLabels);
+    var options = {
+        chart: {
+            type: 'pie',
+            height: 225,
+            foreColor: '#ffffff',
+            fontSize: '8px',
+            fontFamily: 'Helvetica, Arial',
+            fontWeight: 400,
+        },
+        labels: pieLabels,
+        series: pieSizes,
+        colors: ['#008FFB', '#00E396', '#FEB019', '#FF4560', '#775DD0'],
+        value: {
+          show: true,
+          fontSize: '5px',
+          fontFamily: undefined,
+          fontWeight: 400,
+          color: undefined,
+          offsetY: 16,
+          formatter: function formatter(val) {
+            return val ;
+          }
+        },
+      legend: {
+        show: true,
+        floating: false,
+        position: 'right',
+        horizontalAlign:'left',
+        verticalAlign:'left',
+        // offsetX: 65,
+        // offsetY: 140,
+        fontFamily: 'Helvetica, Arial',
+        width:240,
+        labels: {
+              colors: '#ffffff',
+              useSeriesColors: true
+          },
+      },
+    };
+
+    var pieChart = new ApexCharts(document.getElementById('pie-chart'), options);
+    pieChart.render();
+</script>
+<script>
+  $(document).ready( function() {
+    $('#example').dataTable({
+        /* Disable initial sort */
+        dom: 't',
+        
+        "aaSorting": [],
+        "ordering": false,
+        "autoWidth": false,
+        "pageLength": 20,
+        "pagingType": 'full_numbers'
+    });
+})
+</script>
+
+{% endblock content %}

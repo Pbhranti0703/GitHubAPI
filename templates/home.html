@@ -1,0 +1,46 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+    <style>
+    
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-left: 2%;
+        }
+        
+        p {
+            color:aliceblue;
+            font-size: 14px;
+            margin-left: 2%;
+        }
+        
+        h3
+        {
+            color:azure;
+            font-size: 18px;
+        }
+    </style>
+
+    <div class="container" style="margin-left: 4%; margin-top: 4%;">
+        <h1><b style="color:aliceblue">GitHubAPI</b> Repository Stats</h1>
+        <small style="font-size: 14px;">&nbsp; GitHub API integration system to fetch and display below metrics</small>
+        <br>
+        <br>
+        <ul>
+            <li>
+                <h3>1. Commits Over Time:</h3>
+                <p> - Line chart showing the number of commits over time.</p>
+            </li>
+
+            <li>
+                <h3>2. Contributors:</h3>
+                <p> - Bar chart showing the number of commits per contributor.</p>
+                <p> - Pie chart or bar chart illustrating the distribution of contributions among top contributors.</p>
+            </li>
+        </ul>
+    </div>
+
+    
+{% endblock content %}

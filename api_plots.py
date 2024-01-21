@@ -61,6 +61,44 @@ def get_top_contributors(owner, repo, token, top_n):
 
     return top_contributors
 
+def get_contributors_details():
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+
+    # Get contributors list
+    contributors_url = f'https://api.github.com/repos/{owner}/{repo}/contributors'
+    contributors_response = requests.get(contributors_url, headers=headers)
+    contributors_data = contributors_response.json()
+
+    contributors_details = []
+
+    for contributor in contributors_data:
+        # Get detailed information for each contributor
+        contributor_login = contributor['login']
+
+        # Get user details
+        user_url = f'https://api.github.com/users/{contributor_login}'
+        user_response = requests.get(user_url, headers=headers)
+        user_data = user_response.json()
+
+        # Extract relevant information
+        last_login = user_data.get('updated_at', '')
+        last_login = datetime.strptime(last_login, '%Y-%m-%dT%H:%M:%SZ').strftime('%Y-%m-%d')
+
+        total_commits = contributor['contributions']
+
+        # Add contributor details to the list
+        contributors_details.append({
+            'username': contributor_login,
+            'last_login': last_login,
+            'total_commits': total_commits
+            # Add more details as needed
+        })
+
+    return contributors_details
+
 def plot_contributions_distribution(contributors):
     labels = [contributor['login'] for contributor in contributors]
     contributions = [contributor['contributions'] for contributor in contributors]
@@ -99,6 +137,41 @@ def plot_code_changes_over_time(dates, additions, deletions):
     plt.ylabel('Lines Changed')
     plt.legend()
     plt.xticks(rotation=45, ha='right')
+    plt.show()
+
+def get_commit_activity():
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/vnd.github.v3+json'
+    }
+
+    # Get commit activity
+    commit_activity_url = f'https://api.github.com/repos/{owner}/{repo}/stats/commit_activity'
+    commit_activity_response = requests.get(commit_activity_url, headers=headers)
+    commit_activity_data = commit_activity_response.json()
+
+    # Extract weekly data
+    weeks = [datetime.utcfromtimestamp(week['week']).strftime('%Y-%m-%d') for week in commit_activity_data]
+    additions = [week['total'] for week in commit_activity_data]
+    deletions = [week['total'] - week['additions'] for week in commit_activity_data]
+
+    return weeks, additions, deletions
+
+def plot_commit_activity(weeks, additions, deletions, chart_type='line'):
+    plt.figure(figsize=(12, 6))
+
+    if chart_type == 'line':
+        plt.plot(weeks, additions, label='Additions', marker='o')
+        plt.plot(weeks, deletions, label='Deletions', marker='o')
+    elif chart_type == 'area':
+        plt.fill_between(weeks, additions, color='skyblue', alpha=0.4, label='Additions')
+        plt.fill_between(weeks, deletions, color='lightcoral', alpha=0.4, label='Deletions')
+
+    plt.title('Files Added and Deleted Over Time')
+    plt.xlabel('Week')
+    plt.ylabel('Number of Files Changed')
+    plt.xticks(rotation=45, ha='right')
+    plt.legend()
     plt.show()
 
 def get_contributions_by_contributor():
@@ -479,61 +552,73 @@ def fetch_and_plot_repo_stats(owner, repo, token):
     contributors = [contributor['login'] for contributor in contributors_data]
 
     
-    # Line chart showing the number of commits over time
-    plot_commits()
+    # # Line chart showing the number of commits over time
+    # plot_commits()
 
-    # Bar chart showing the number of commits per contributor.
-    plot_commits_per_contributor()
+    # # Bar chart showing the number of commits per contributor.
+    # plot_commits_per_contributor()
 
-    # Pie chart or bar chart illustrating the distribution of contributions among top contributors.
-    top_contributors = get_top_contributors(owner, repo, token, 5)
-    plot_contributions_distribution(top_contributors)
+    # # Pie chart or bar chart illustrating the distribution of contributions among top contributors.
+    # top_contributors = get_top_contributors(owner, repo, token, 5)
+    # plot_contributions_distribution(top_contributors)
 
-    # Line chart or area chart showing the lines added and deleted over time.
-    dates, additions, deletions = get_code_changes_over_time()
-    plot_code_changes_over_time(dates, additions, deletions)
+    # # Line chart or area chart showing the lines added and deleted over time.
+    # dates, additions, deletions = get_code_changes_over_time()
+    # plot_code_changes_over_time(dates, additions, deletions)
 
-    # Stacked bar chart showing contributions by each contributor (additions and deletions).
-    contributors, additions, deletions = get_contributions_by_contributor()
-    plot_stacked_bar_chart_line_changes(contributors, additions, deletions)
+    # # Stacked bar chart showing contributions by each contributor (additions and deletions).
+    # contributors, additions, deletions = get_contributions_by_contributor()
+    # plot_stacked_bar_chart_line_changes(contributors, additions, deletions)
 
-    # Line chart displaying the number of pull requests over time.
-    plot_pull_requests_over_time()
+    # # Line chart displaying the number of pull requests over time.
+    # plot_pull_requests_over_time()
 
-    # Bar chart showing the status of open, closed, and merged pull requests.
-    open_count, closed_count, merged_count = get_pull_request_status()
-    plot_pull_request_status(open_count, closed_count, merged_count)
+    # # Bar chart showing the status of open, closed, and merged pull requests.
+    # open_count, closed_count, merged_count = get_pull_request_status()
+    # plot_pull_request_status(open_count, closed_count, merged_count)
 
-    # Stacked bar chart illustrating pull request contributions by each contributor.
-    plot_pull_request_contributions()
+    # # Stacked bar chart illustrating pull request contributions by each contributor.
+    # plot_pull_request_contributions()
 
-    # Line chart showing the number of issues created over time.
-    plot_issues_over_time()
+    # # Line chart showing the number of issues created over time.
+    # plot_issues_over_time()
 
-    # Bar chart indicating the status of open and closed issues.
-    open_count, closed_count = get_issue_status()
-    plot_issue_status(open_count, closed_count)
+    # # Bar chart indicating the status of open and closed issues.
+    # open_count, closed_count = get_issue_status()
+    # plot_issue_status(open_count, closed_count)
 
-    # Line chart representing the number of comments on issues and pull requests over time.
-    plot_comments_over_time()
+    # # Line chart representing the number of comments on issues and pull requests over time.
+    # plot_comments_over_time()
 
-    # Stacked bar chart showing comments by each contributor.
-    plot_stacked_bar_chart_comments()
+    # # Stacked bar chart showing comments by each contributor.
+    # plot_stacked_bar_chart_comments()
 
-    # Line chart or bar chart displaying various repository events like pushes, forks, etc., over time.
-    event_types, event_dates = get_repository_events()
-    plot_repository_events(event_types, event_dates, chart_type='bar')
+    # # Line chart or bar chart displaying various repository events like pushes, forks, etc., over time.
+    # event_types, event_dates = get_repository_events()
+    # plot_repository_events(event_types, event_dates, chart_type='bar')
 
-    # Pie chart or bar chart illustrating the distribution of programming languages in the repository.
-    plot_language_distribution(chart_type='pie')
+    # # Pie chart or bar chart illustrating the distribution of programming languages in the repository.
+    # plot_language_distribution(chart_type='pie')
 
-    # Displaying information about the repository's license.
-    get_repo_license()
+    # # Displaying information about the repository's license.
+    # get_repo_license()
 
-    # Bar chart or line chart showing repository views, clones, and unique visitors.
-    views_count, views_uniques, clones_count, clones_uniques = get_repository_traffic()
-    plot_repository_traffic(views_count, views_uniques, clones_count, clones_uniques, chart_type='line')
+    # # Bar chart or line chart showing repository views, clones, and unique visitors.
+    # views_count, views_uniques, clones_count, clones_uniques = get_repository_traffic()
+    # plot_repository_traffic(views_count, views_uniques, clones_count, clones_uniques, chart_type='line')
 
+    # # Line chart or area chart showing the files added and deleted over time.
+    # weeks, additions, deletions = get_commit_activity()
+    # plot_commit_activity(weeks, additions, deletions, chart_type='area')  # Change to 'area' for an area chart
+    
+    contributors_details = get_contributors_details()
+
+    # Print the details (you can format and display this data in HTML or any other format)
+    for contributor in contributors_details:
+        print(f"Username: {contributor['username']}")
+        print(f"Last Login: {contributor['last_login']}")
+        print(f"Total Commits: {contributor['total_commits']}")
+        print("-" * 20)
 if __name__ == "__main__":
     global owner, repo, token
     owner = creds.OWNER
