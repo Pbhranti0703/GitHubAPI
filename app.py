@@ -1,7 +1,4 @@
 from flask import Flask, render_template
-import matplotlib.pyplot as plt
-from io import BytesIO
-import base64
 import requests
 from datetime import datetime
 import credentials as creds
