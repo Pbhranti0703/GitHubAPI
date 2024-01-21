@@ -1,7 +1,7 @@
 # GitHubAPI
 This Repository is to learn about GitHub Rest API and do some experiments with GitHub Api
 
-    Creating different Plots using the GitHub API:
+Creating different Plots using the GitHub API:
 
 1. **Commits Over Time:**
    - Line chart showing the number of commits over time.
